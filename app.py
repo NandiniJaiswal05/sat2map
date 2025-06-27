@@ -47,11 +47,11 @@ class UNet(nn.Module):
             nn.ReLU(inplace=True),
         )
 
-# === Load Generator ===
+# === Load model weights ===
 @st.cache_resource
 def load_generator():
     if not os.path.exists(MODEL_PATH):
-        st.info("📥 Downloading model from Dropbox...")
+        st.info("📥 Downloading model...")
         try:
             with requests.get(MODEL_URL, stream=True) as r:
                 r.raise_for_status()
@@ -59,7 +59,7 @@ def load_generator():
                     for chunk in r.iter_content(8192):
                         f.write(chunk)
         except Exception as e:
-            st.error(f"❌ Failed to download model: {e}")
+            st.error(f"❌ Download failed: {e}")
             st.stop()
 
     model = UNet(in_channels=3, out_channels=3)
@@ -71,9 +71,8 @@ def load_generator():
             model.load_state_dict(checkpoint)
         model.eval()
     except Exception as e:
-        st.error(f"❌ Failed to load model weights: {e}")
+        st.error(f"❌ Model load failed: {e}")
         st.stop()
-
     return model
 
 # === Utilities ===
@@ -98,18 +97,19 @@ def run_model_on_satellite(satellite_tensor):
         output = generator(satellite_tensor)
     return tensor_to_pil(output)
 
-# === Streamlit UI ===
-st.set_page_config(page_title="Satellite to Roadmap", layout="centered")
+# === UI Setup ===
+st.set_page_config("Satellite to Roadmap", layout="centered")
+st.title("🛰 Satellite to Roadmap")
 st.markdown("<h3 style='text-align: center; color: gray;'>NRSC, ISRO</h3>", unsafe_allow_html=True)
-st.title("🛰 Change Detection")
 
-uploaded_file1 = st.file_uploader("📤 Upload Satellite Image 1", type=["jpg", "jpeg", "png"], key="uploader1")
-uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
+# === Uploaders ===
+uploaded_file1 = st.file_uploader("📤 Upload Satellite Image 1", type=["jpg", "jpeg", "png"], key="up1")
+uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="up2")
 
-# === Process Image 1 ===
+# === Image 1 ===
+st.markdown("---")
+st.markdown("### 🖼️ Image 1 Output")
 if uploaded_file1:
-    st.markdown("---")
-    st.markdown("### 📁 Image 1 Processing")
     try:
         image1, satellite1 = process_image_before_model(uploaded_file1)
         st.image(image1, caption="📸 Full Image 1", use_container_width=True)
@@ -117,14 +117,16 @@ if uploaded_file1:
         with st.spinner("🔧 Generating Roadmap 1..."):
             tensor1 = transform(satellite1).unsqueeze(0)
             roadmap1 = run_model_on_satellite(tensor1)
-            st.image(roadmap1, caption="🗺 Predicted Roadmap 1", use_container_width=True)
+            st.image(roadmap1, caption="🗺 Roadmap 1", use_container_width=True)
     except Exception as e:
-        st.error(f"❌ Error processing Image 1: {e}")
+        st.error(f"Error in Image 1: {e}")
+else:
+    st.info("Upload Image 1 to see result.")
 
-# === Process Image 2 ===
+# === Image 2 ===
+st.markdown("---")
+st.markdown("### 🖼️ Image 2 Output")
 if uploaded_file2:
-    st.markdown("---")
-    st.markdown("### 📁 Image 2 Processing")
     try:
         image2, satellite2 = process_image_before_model(uploaded_file2)
         st.image(image2, caption="📸 Full Image 2", use_container_width=True)
@@ -132,9 +134,12 @@ if uploaded_file2:
         with st.spinner("🔧 Generating Roadmap 2..."):
             tensor2 = transform(satellite2).unsqueeze(0)
             roadmap2 = run_model_on_satellite(tensor2)
-            st.image(roadmap2, caption="🗺 Predicted Roadmap 2", use_container_width=True)
+            st.image(roadmap2, caption="🗺 Roadmap 2", use_container_width=True)
     except Exception as e:
-        st.error(f"❌ Error processing Image 2: {e}")
+        st.error(f"Error in Image 2: {e}")
+else:
+    st.info("Upload Image 2 to see result.")
+
 
 
 
