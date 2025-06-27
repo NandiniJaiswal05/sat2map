@@ -115,30 +115,32 @@ with col1:
 with col2:
     uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-# === Display Image 1 if uploaded ===
+# === Process and Show Image 1 ===
 if uploaded_file1:
-    st.markdown("### 📁 Image 1 Results")
+    st.markdown("---")
+    st.markdown("### 📁 Image 1 Processing")
     try:
         image1, satellite1 = process_image_before_model(uploaded_file1)
         st.image(image1, caption="📸 Uploaded Image 1", use_container_width=True)
         st.image(satellite1, caption="🧭 Cropped Satellite 1", use_container_width=True)
 
-        with st.spinner("🔧 Generating Roadmap 1..."):
+        with st.spinner("🔧 Generating Roadmap for Image 1..."):
             tensor1 = transform(satellite1).unsqueeze(0)
             roadmap1 = run_model_on_satellite(tensor1)
             st.image(roadmap1, caption="🗺 Predicted Roadmap 1", use_container_width=True)
     except Exception as e:
         st.error(f"❌ Error processing Image 1: {e}")
 
-# === Display Image 2 if uploaded ===
+# === Process and Show Image 2 ===
 if uploaded_file2:
-    st.markdown("### 📁 Image 2 Results")
+    st.markdown("---")
+    st.markdown("### 📁 Image 2 Processing")
     try:
         image2, satellite2 = process_image_before_model(uploaded_file2)
         st.image(image2, caption="📸 Uploaded Image 2", use_container_width=True)
         st.image(satellite2, caption="🧭 Cropped Satellite 2", use_container_width=True)
 
-        with st.spinner("🔧 Generating Roadmap 2..."):
+        with st.spinner("🔧 Generating Roadmap for Image 2..."):
             tensor2 = transform(satellite2).unsqueeze(0)
             roadmap2 = run_model_on_satellite(tensor2)
             st.image(roadmap2, caption="🗺 Predicted Roadmap 2", use_container_width=True)
