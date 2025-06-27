@@ -62,6 +62,7 @@ def tensor_to_pil(tensor_img):
 
 # === Streamlit App ===
 st.set_page_config(page_title="Change Detection", layout="centered")
+st.markdown("<h3 style='text-align: center; color: gray;'>NRSC, ISRO</h3>", unsafe_allow_html=True)
 st.title("Change Detection")
 
 # Upload two satellite images side-by-side
