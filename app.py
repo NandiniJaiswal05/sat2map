@@ -115,61 +115,38 @@ with col1:
 with col2:
     uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-# === Single Image Upload ===
-if (uploaded_file1 and not uploaded_file2) or (uploaded_file2 and not uploaded_file1):
-    uploaded_file = uploaded_file1 if uploaded_file1 else uploaded_file2
-    idx = 1 if uploaded_file1 else 2
-    image, satellite = process_image_before_model(uploaded_file)
+# === Single or First Image Processing ===
+if uploaded_file1:
+    st.markdown("---\n### 📁 Image 1 Results")
+    image1, satellite1 = process_image_before_model(uploaded_file1)
+    st.image(image1, caption="📸 Uploaded Image 1", use_container_width=True)
+    st.subheader("🧭 Cropped Satellite 1")
+    st.image(satellite1, use_container_width=True)
 
-    st.markdown(f"---\n### 📁 Image {idx}")
-    st.image(image, caption=f"📸 Uploaded Image {idx} (Full)", use_container_width=True)
-    st.subheader(f"🧭 Cropped Satellite {idx}")
-    st.image(satellite, use_container_width=True)
-
-    with st.spinner(f"🔧 Generating Roadmap {idx}..."):
+    with st.spinner("🔧 Generating Roadmap 1..."):
         try:
-            tensor = transform(satellite).unsqueeze(0)
-            roadmap = run_model_on_satellite(tensor)
-            st.subheader(f"🗺 Predicted Roadmap {idx}")
-            st.image(roadmap, use_container_width=True)
-        except Exception as e:
-            st.error(f"❌ Model error: {e}")
-
-
-# === Both Images Uploaded ===
-elif uploaded_file1 and uploaded_file2:
-    st.markdown("---\n### 📁 Processing Both Images Side by Side")
-
-    try:
-        # Process both
-        image1, satellite1 = process_image_before_model(uploaded_file1)
-        image2, satellite2 = process_image_before_model(uploaded_file2)
-
-        tensor1 = transform(satellite1).unsqueeze(0)
-        tensor2 = transform(satellite2).unsqueeze(0)
-
-        with st.spinner("🔧 Running model on both images..."):
+            tensor1 = transform(satellite1).unsqueeze(0)
             roadmap1 = run_model_on_satellite(tensor1)
-            roadmap2 = run_model_on_satellite(tensor2)
-
-        # Display side by side
-        col1, col2 = st.columns(2)
-
-        with col1:
-            st.subheader("📸 Uploaded Image 1")
-            st.image(image1, use_container_width=True)
-            st.subheader("🧭 Cropped Satellite 1")
-            st.image(satellite1, use_container_width=True)
             st.subheader("🗺 Predicted Roadmap 1")
             st.image(roadmap1, use_container_width=True)
+        except Exception as e:
+            st.error(f"❌ Error in Image 1: {e}")
 
-        with col2:
-            st.subheader("📸 Uploaded Image 2")
-            st.image(image2, use_container_width=True)
-            st.subheader("🧭 Cropped Satellite 2")
-            st.image(satellite2, use_container_width=True)
+
+# === Second Image Processing (Only if uploaded) ===
+if uploaded_file2:
+    st.markdown("---\n### 📁 Image 2 Results")
+    image2, satellite2 = process_image_before_model(uploaded_file2)
+    st.image(image2, caption="📸 Uploaded Image 2", use_container_width=True)
+    st.subheader("🧭 Cropped Satellite 2")
+    st.image(satellite2, use_container_width=True)
+
+    with st.spinner("🔧 Generating Roadmap 2..."):
+        try:
+            tensor2 = transform(satellite2).unsqueeze(0)
+            roadmap2 = run_model_on_satellite(tensor2)
             st.subheader("🗺 Predicted Roadmap 2")
             st.image(roadmap2, use_container_width=True)
+        except Exception as e:
+            st.error(f"❌ Error in Image 2: {e}")
 
-    except Exception as e:
-        st.error(f"❌ Error during image processing: {e}")
