@@ -61,9 +61,9 @@ def tensor_to_pil(tensor_img):
     return transforms.ToPILImage()(tensor_img)
 
 # === Streamlit App ===
-st.set_page_config(page_title="Satellite to Roadmap", layout="centered")
+st.set_page_config(page_title="Change Detection", layout="centered")
 st.markdown("<h3 style='text-align: center; color: gray;'>NRSC, ISRO</h3>", unsafe_allow_html=True)
-st.title("🛰 Satellite to Roadmap Generator")
+st.title("Change Detection")
 
 # Upload two satellite images side-by-side
 col1, col2 = st.columns(2)
