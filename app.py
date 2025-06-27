@@ -62,8 +62,6 @@ def tensor_to_pil(tensor_img):
 
 # === Streamlit App ===
 st.set_page_config(page_title="Satellite to Roadmap", layout="centered")
-
-# Heading
 st.markdown("<h3 style='text-align: center; color: gray;'>NRSC, ISRO</h3>", unsafe_allow_html=True)
 st.title("🛰 Satellite to Roadmap Generator")
 
@@ -74,12 +72,11 @@ with col1:
 with col2:
     uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-# Process each uploaded file
+# Process each uploaded file and show result side by side
 for idx, uploaded_file in enumerate([uploaded_file1, uploaded_file2], start=1):
     if uploaded_file:
         try:
             st.markdown(f"---\n### 📁 Image {idx}")
-
             image = Image.open(uploaded_file).convert("RGB")
             w, h = image.size
             satellite = image.crop((0, 0, w // 2, h))
@@ -92,12 +89,12 @@ for idx, uploaded_file in enumerate([uploaded_file1, uploaded_file2], start=1):
                     output = generator(input_tensor)
                 roadmap = tensor_to_pil(output)
 
-            # Show both input and output side by side
-            col_in, col_out = st.columns(2)
-            with col_in:
+            # Show satellite input and roadmap output side by side
+            col_sat, col_roadmap = st.columns(2)
+            with col_sat:
                 st.subheader(f"🧭 Satellite Input {idx}")
                 st.image(satellite, use_container_width=True)
-            with col_out:
+            with col_roadmap:
                 st.subheader(f"🗺 Predicted Roadmap {idx}")
                 st.image(roadmap, use_container_width=True)
 
