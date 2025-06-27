@@ -61,9 +61,11 @@ def tensor_to_pil(tensor_img):
     return transforms.ToPILImage()(tensor_img)
 
 # === Streamlit App ===
-st.set_page_config(page_title="Change Detection", layout="centered")
+st.set_page_config(page_title="Satellite to Roadmap", layout="centered")
+
+# Heading
 st.markdown("<h3 style='text-align: center; color: gray;'>NRSC, ISRO</h3>", unsafe_allow_html=True)
-st.title("Change Detection")
+st.title("🛰 Satellite to Roadmap Generator")
 
 # Upload two satellite images side-by-side
 col1, col2 = st.columns(2)
@@ -77,14 +79,10 @@ for idx, uploaded_file in enumerate([uploaded_file1, uploaded_file2], start=1):
     if uploaded_file:
         try:
             st.markdown(f"---\n### 📁 Image {idx}")
-            image = Image.open(uploaded_file).convert("RGB")
-            st.image(image, caption=f"📸 Uploaded Image {idx}", use_container_width=True)
 
+            image = Image.open(uploaded_file).convert("RGB")
             w, h = image.size
             satellite = image.crop((0, 0, w // 2, h))
-
-            st.subheader(f"🧭 Satellite Input {idx}")
-            st.image(satellite, use_container_width=True)
 
             input_tensor = transform(satellite).unsqueeze(0)
 
@@ -94,8 +92,14 @@ for idx, uploaded_file in enumerate([uploaded_file1, uploaded_file2], start=1):
                     output = generator(input_tensor)
                 roadmap = tensor_to_pil(output)
 
-            st.subheader(f"🗺 Predicted Roadmap {idx}")
-            st.image(roadmap, use_container_width=True)
+            # Show both input and output side by side
+            col_in, col_out = st.columns(2)
+            with col_in:
+                st.subheader(f"🧭 Satellite Input {idx}")
+                st.image(satellite, use_container_width=True)
+            with col_out:
+                st.subheader(f"🗺 Predicted Roadmap {idx}")
+                st.image(roadmap, use_container_width=True)
 
         except Exception as e:
             st.error(f"❌ Error processing Image {idx}: {e}")
