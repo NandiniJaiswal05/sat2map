@@ -136,45 +136,42 @@ if (uploaded_file1 and not uploaded_file2) or (uploaded_file2 and not uploaded_f
 if uploaded_file1 and uploaded_file2:
     st.markdown("### 📁 Both Images Side by Side")
 
-    # Convert uploaded files to unique PIL objects
     try:
+        # Load images individually
         image1 = Image.open(uploaded_file1).convert("RGB")
         image2 = Image.open(uploaded_file2).convert("RGB")
-    except Exception as e:
-        st.error(f"❌ Failed to open images: {e}")
-        st.stop()
 
-    col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
-    with col1:
-        st.subheader("📸 Uploaded Image 1")
-        st.image(image1, use_container_width=True)
-        satellite1 = image1.crop((0, 0, image1.width // 2, image1.height))
-        st.subheader("🧭 Cropped Satellite 1")
-        st.image(satellite1, use_container_width=True)
-        with st.spinner("🔧 Generating Roadmap 1..."):
-            try:
+        # === Image 1 ===
+        with col1:
+            st.subheader("📸 Uploaded Image 1")
+            st.image(image1, caption="Image 1", use_container_width=True)
+            satellite1 = image1.crop((0, 0, image1.width // 2, image1.height))
+            st.subheader("🧭 Cropped Satellite 1")
+            st.image(satellite1, use_container_width=True)
+            with st.spinner("🔧 Generating Roadmap 1..."):
                 tensor1 = transform(satellite1).unsqueeze(0)
                 roadmap1 = run_model_on_satellite(tensor1)
                 st.subheader("🗺 Predicted Roadmap 1")
                 st.image(roadmap1, use_container_width=True)
-            except Exception as e:
-                st.error(f"❌ Error in Image 1: {e}")
 
-    with col2:
-        st.subheader("📸 Uploaded Image 2")
-        st.image(image2, use_container_width=True)
-        satellite2 = image2.crop((0, 0, image2.width // 2, image2.height))
-        st.subheader("🧭 Cropped Satellite 2")
-        st.image(satellite2, use_container_width=True)
-        with st.spinner("🔧 Generating Roadmap 2..."):
-            try:
+        # === Image 2 ===
+        with col2:
+            st.subheader("📸 Uploaded Image 2")
+            st.image(image2, caption="Image 2", use_container_width=True)
+            satellite2 = image2.crop((0, 0, image2.width // 2, image2.height))
+            st.subheader("🧭 Cropped Satellite 2")
+            st.image(satellite2, use_container_width=True)
+            with st.spinner("🔧 Generating Roadmap 2..."):
                 tensor2 = transform(satellite2).unsqueeze(0)
                 roadmap2 = run_model_on_satellite(tensor2)
                 st.subheader("🗺 Predicted Roadmap 2")
                 st.image(roadmap2, use_container_width=True)
-            except Exception as e:
-                st.error(f"❌ Error in Image 2: {e}")
+
+    except Exception as e:
+        st.error(f"❌ Unexpected error: {e}")
+
 
 
 # # === Both Images Uploaded ===
