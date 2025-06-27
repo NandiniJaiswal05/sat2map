@@ -88,8 +88,8 @@ def generate_roadmap(image_tensor):
     return tensor_to_pil(output)
 
 # === Streamlit UI ===
-st.set_page_config("Satellite to Roadmap", layout="centered")
-st.title("🛰 Satellite to Roadmap")
+st.set_page_config("Change Detection", layout="centered")
+st.title("🛰 Change Detection")
 st.markdown("<h4 style='text-align: center; color: gray;'>NRSC, ISRO</h4>", unsafe_allow_html=True)
 
 # === Uploaders ===
