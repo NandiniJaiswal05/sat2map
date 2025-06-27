@@ -93,8 +93,11 @@ st.title("🛰 Change Detection")
 st.markdown("<h4 style='text-align: center; color: gray;'>NRSC, ISRO</h4>", unsafe_allow_html=True)
 
 # === Uploaders ===
-uploaded_file1 = st.file_uploader("📤 Upload Image 1", type=["jpg", "jpeg", "png"], key="img1")
-uploaded_file2 = st.file_uploader("📤 Upload Image 2", type=["jpg", "jpeg", "png"], key="img2")
+col1, col2 = st.columns(2)
+with col1:
+    uploaded_file1 = st.file_uploader("📤 Upload Image 1", type=["jpg", "jpeg", "png"], key="img1")
+with col2:
+    uploaded_file2 = st.file_uploader("📤 Upload Image 2", type=["jpg", "jpeg", "png"], key="img2")
 
 # === Display and Process ===
 def show_output(image_file, title="Image"):
