@@ -117,7 +117,7 @@ with col2:
 
 # === Handle Image 1 ===
 if uploaded_file1:
-    st.markdown("---\n### 📁 Image 1 Results")
+    st.markdown("### 📁 Image 1 Results")
     try:
         image1, satellite1 = process_image_before_model(uploaded_file1)
         st.image(image1, caption="📸 Uploaded Image 1", use_container_width=True)
@@ -132,9 +132,9 @@ if uploaded_file1:
     except Exception as e:
         st.error(f"❌ Error in Image 1: {e}")
 
-# === Handle Image 2 ===
+# === Handle Image 2 (shown below image 1, not side-by-side) ===
 if uploaded_file2:
-    st.markdown("---\n### 📁 Image 2 Results")
+    st.markdown("### 📁 Image 2 Results")
     try:
         image2, satellite2 = process_image_before_model(uploaded_file2)
         st.image(image2, caption="📸 Uploaded Image 2", use_container_width=True)
