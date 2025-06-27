@@ -89,8 +89,8 @@ def generate_roadmap(image_tensor):
 
 # === Streamlit UI ===
 st.set_page_config("Change Detection", layout="centered")
-st.title("🛰 Change Detection")
 st.markdown("<h4 style='text-align: center; color: gray;'>NRSC, ISRO</h4>", unsafe_allow_html=True)
+st.title("🛰 Change Detection")
 
 # === Uploaders ===
 col1, col2 = st.columns(2)
