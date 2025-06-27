@@ -115,38 +115,36 @@ with col1:
 with col2:
     uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-# === Single or First Image Processing ===
+# === Handle Image 1 ===
 if uploaded_file1:
     st.markdown("---\n### 📁 Image 1 Results")
-    image1, satellite1 = process_image_before_model(uploaded_file1)
-    st.image(image1, caption="📸 Uploaded Image 1", use_container_width=True)
-    st.subheader("🧭 Cropped Satellite 1")
-    st.image(satellite1, use_container_width=True)
+    try:
+        image1, satellite1 = process_image_before_model(uploaded_file1)
+        st.image(image1, caption="📸 Uploaded Image 1", use_container_width=True)
+        st.subheader("🧭 Cropped Satellite 1")
+        st.image(satellite1, use_container_width=True)
 
-    with st.spinner("🔧 Generating Roadmap 1..."):
-        try:
+        with st.spinner("🔧 Generating Roadmap 1..."):
             tensor1 = transform(satellite1).unsqueeze(0)
             roadmap1 = run_model_on_satellite(tensor1)
             st.subheader("🗺 Predicted Roadmap 1")
             st.image(roadmap1, use_container_width=True)
-        except Exception as e:
-            st.error(f"❌ Error in Image 1: {e}")
+    except Exception as e:
+        st.error(f"❌ Error in Image 1: {e}")
 
-
-# === Second Image Processing (Only if uploaded) ===
+# === Handle Image 2 ===
 if uploaded_file2:
     st.markdown("---\n### 📁 Image 2 Results")
-    image2, satellite2 = process_image_before_model(uploaded_file2)
-    st.image(image2, caption="📸 Uploaded Image 2", use_container_width=True)
-    st.subheader("🧭 Cropped Satellite 2")
-    st.image(satellite2, use_container_width=True)
+    try:
+        image2, satellite2 = process_image_before_model(uploaded_file2)
+        st.image(image2, caption="📸 Uploaded Image 2", use_container_width=True)
+        st.subheader("🧭 Cropped Satellite 2")
+        st.image(satellite2, use_container_width=True)
 
-    with st.spinner("🔧 Generating Roadmap 2..."):
-        try:
+        with st.spinner("🔧 Generating Roadmap 2..."):
             tensor2 = transform(satellite2).unsqueeze(0)
             roadmap2 = run_model_on_satellite(tensor2)
             st.subheader("🗺 Predicted Roadmap 2")
             st.image(roadmap2, use_container_width=True)
-        except Exception as e:
-            st.error(f"❌ Error in Image 2: {e}")
-
+    except Exception as e:
+        st.error(f"❌ Error in Image 2: {e}")
