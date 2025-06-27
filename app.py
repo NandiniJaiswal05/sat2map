@@ -115,9 +115,8 @@ with col1:
 with col2:
     uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-# === Show Image 1 if uploaded ===
+# === Display Image 1 if uploaded ===
 if uploaded_file1:
-    st.markdown("---")
     st.markdown("### 📁 Image 1 Results")
     try:
         image1, satellite1 = process_image_before_model(uploaded_file1)
@@ -129,11 +128,10 @@ if uploaded_file1:
             roadmap1 = run_model_on_satellite(tensor1)
             st.image(roadmap1, caption="🗺 Predicted Roadmap 1", use_container_width=True)
     except Exception as e:
-        st.error(f"❌ Error in Image 1: {e}")
+        st.error(f"❌ Error processing Image 1: {e}")
 
-# === Show Image 2 if uploaded ===
+# === Display Image 2 if uploaded ===
 if uploaded_file2:
-    st.markdown("---")
     st.markdown("### 📁 Image 2 Results")
     try:
         image2, satellite2 = process_image_before_model(uploaded_file2)
@@ -145,4 +143,4 @@ if uploaded_file2:
             roadmap2 = run_model_on_satellite(tensor2)
             st.image(roadmap2, caption="🗺 Predicted Roadmap 2", use_container_width=True)
     except Exception as e:
-        st.error(f"❌ Error in Image 2: {e}")
+        st.error(f"❌ Error processing Image 2: {e}")
