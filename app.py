@@ -72,31 +72,51 @@ with col1:
 with col2:
     uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-# Process each uploaded file and show result side by side
-for idx, uploaded_file in enumerate([uploaded_file1, uploaded_file2], start=1):
-    if uploaded_file:
-        try:
-            st.markdown(f"---\n### 📁 Image {idx}")
-            image = Image.open(uploaded_file).convert("RGB")
-            w, h = image.size
-            satellite = image.crop((0, 0, w // 2, h))
+# === Load model once ===
+generator = None
+if uploaded_file1 or uploaded_file2:
+    generator = load_generator()
 
-            input_tensor = transform(satellite).unsqueeze(0)
+# === Handle first uploaded file ===
+if uploaded_file1:
+    st.markdown("### 📁 Image 1")
+    image1 = Image.open(uploaded_file1).convert("RGB")
+    w, h = image1.size
+    satellite1 = image1.crop((0, 0, w // 2, h))
 
-            with st.spinner("🔧 Loading model & generating roadmap..."):
-                generator = load_generator()
-                with torch.no_grad():
-                    output = generator(input_tensor)
-                roadmap = tensor_to_pil(output)
+    input_tensor1 = transform(satellite1).unsqueeze(0)
 
-            # Show satellite input and roadmap output side by side
-            col_sat, col_roadmap = st.columns(2)
-            with col_sat:
-                st.subheader(f"🧭 Satellite Input {idx}")
-                st.image(satellite, use_container_width=True)
-            with col_roadmap:
-                st.subheader(f"🗺 Predicted Roadmap {idx}")
-                st.image(roadmap, use_container_width=True)
+    with st.spinner("🔧 Generating roadmap for Image 1..."):
+        with torch.no_grad():
+            output1 = generator(input_tensor1)
+        roadmap1 = tensor_to_pil(output1)
 
-        except Exception as e:
-            st.error(f"❌ Error processing Image {idx}: {e}")
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.subheader("🧭 Satellite Input 1")
+        st.image(satellite1, use_container_width=True)
+    with col_b:
+        st.subheader("🗺 Predicted Roadmap 1")
+        st.image(roadmap1, use_container_width=True)
+
+# === Handle second uploaded file ===
+if uploaded_file2:
+    st.markdown("### 📁 Image 2")
+    image2 = Image.open(uploaded_file2).convert("RGB")
+    w, h = image2.size
+    satellite2 = image2.crop((0, 0, w // 2, h))
+
+    input_tensor2 = transform(satellite2).unsqueeze(0)
+
+    with st.spinner("🔧 Generating roadmap for Image 2..."):
+        with torch.no_grad():
+            output2 = generator(input_tensor2)
+        roadmap2 = tensor_to_pil(output2)
+
+    col_c, col_d = st.columns(2)
+    with col_c:
+        st.subheader("🧭 Satellite Input 2")
+        st.image(satellite2, use_container_width=True)
+    with col_d:
+        st.subheader("🗺 Predicted Roadmap 2")
+        st.image(roadmap2, use_container_width=True)
