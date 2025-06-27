@@ -151,6 +151,7 @@ if uploaded_file1 and uploaded_file2:
                 roadmap1 = run_model_on_satellite(tensor1)
                 st.subheader("🗺 Predicted Roadmap 1")
                 st.image(roadmap1, use_container_width=True)
+                st.markdown("&nbsp;", unsafe_allow_html=True)
             except Exception as e:
                 st.error(f"❌ Error in Image 1: {e}")
 
@@ -168,5 +169,6 @@ if uploaded_file1 and uploaded_file2:
                 roadmap2 = run_model_on_satellite(tensor2)
                 st.subheader("🗺 Predicted Roadmap 2")
                 st.image(roadmap2, use_container_width=True)
+                st.markdown("&nbsp;", unsafe_allow_html=True)
             except Exception as e:
                 st.error(f"❌ Error in Image 2: {e}")
