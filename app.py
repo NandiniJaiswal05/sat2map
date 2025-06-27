@@ -5,6 +5,7 @@ import os
 import requests
 import torchvision.transforms as transforms
 
+# === Configurations ===
 MODEL_URL = "https://www.dropbox.com/scl/fi/wrae5qoxvmc432whdi8fc/checkpoints.pth?rlkey=ilw12iytudgwi1o0ykqd5tdgh&dl=1"
 MODEL_PATH = "checkpoints.pth"
 
@@ -49,6 +50,7 @@ def load_generator():
 
     return model
 
+# === Preprocessing and Display Functions ===
 transform = transforms.Compose([
     transforms.Resize((256, 256)),
     transforms.ToTensor()
@@ -58,32 +60,41 @@ def tensor_to_pil(tensor_img):
     tensor_img = tensor_img.squeeze(0).detach().cpu().clamp(0, 1)
     return transforms.ToPILImage()(tensor_img)
 
+# === Streamlit App ===
 st.set_page_config(page_title="Satellite to Roadmap", layout="centered")
 st.title("🛰 Satellite to Roadmap Generator")
 
-uploaded_file = st.file_uploader("📤 Upload a satellite image (side-by-side)", type=["jpg", "jpeg", "png"])
+# Upload two satellite images side-by-side
+col1, col2 = st.columns(2)
+with col1:
+    uploaded_file1 = st.file_uploader("📤 Upload Satellite Image 1", type=["jpg", "jpeg", "png"], key="uploader1")
+with col2:
+    uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-if uploaded_file:
-    try:
-        image = Image.open(uploaded_file).convert("RGB")
-        st.image(image, caption="📸 Uploaded Image", use_container_width=True)
+# Process each uploaded file
+for idx, uploaded_file in enumerate([uploaded_file1, uploaded_file2], start=1):
+    if uploaded_file:
+        try:
+            st.markdown(f"---\n### 📁 Image {idx}")
+            image = Image.open(uploaded_file).convert("RGB")
+            st.image(image, caption=f"📸 Uploaded Image {idx}", use_container_width=True)
 
-        w, h = image.size
-        satellite = image.crop((0, 0, w // 2, h))
+            w, h = image.size
+            satellite = image.crop((0, 0, w // 2, h))
 
-        st.subheader("🧭 Satellite Input (Left Half)")
-        st.image(satellite, use_container_width=True)
+            st.subheader(f"🧭 Satellite Input {idx}")
+            st.image(satellite, use_container_width=True)
 
-        input_tensor = transform(satellite).unsqueeze(0)
+            input_tensor = transform(satellite).unsqueeze(0)
 
-        with st.spinner("🔧 Loading model & generating roadmap..."):
-            generator = load_generator()
-            with torch.no_grad():
-                output = generator(input_tensor)
-            roadmap = tensor_to_pil(output)
+            with st.spinner("🔧 Loading model & generating roadmap..."):
+                generator = load_generator()
+                with torch.no_grad():
+                    output = generator(input_tensor)
+                roadmap = tensor_to_pil(output)
 
-        st.subheader("🗺 Predicted Roadmap (Right Output)")
-        st.image(roadmap, use_container_width=True)
+            st.subheader(f"🗺 Predicted Roadmap {idx}")
+            st.image(roadmap, use_container_width=True)
 
-    except Exception as e:
-        st.error(f"❌ Error processing image or generating roadmap: {e}")
+        except Exception as e:
+            st.error(f"❌ Error processing Image {idx}: {e}")
