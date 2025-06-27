@@ -115,36 +115,34 @@ with col1:
 with col2:
     uploaded_file2 = st.file_uploader("📤 Upload Satellite Image 2", type=["jpg", "jpeg", "png"], key="uploader2")
 
-# === Handle Image 1 ===
+# === Show Image 1 if uploaded ===
 if uploaded_file1:
+    st.markdown("---")
     st.markdown("### 📁 Image 1 Results")
     try:
         image1, satellite1 = process_image_before_model(uploaded_file1)
         st.image(image1, caption="📸 Uploaded Image 1", use_container_width=True)
-        st.subheader("🧭 Cropped Satellite 1")
-        st.image(satellite1, use_container_width=True)
+        st.image(satellite1, caption="🧭 Cropped Satellite 1", use_container_width=True)
 
         with st.spinner("🔧 Generating Roadmap 1..."):
             tensor1 = transform(satellite1).unsqueeze(0)
             roadmap1 = run_model_on_satellite(tensor1)
-            st.subheader("🗺 Predicted Roadmap 1")
-            st.image(roadmap1, use_container_width=True)
+            st.image(roadmap1, caption="🗺 Predicted Roadmap 1", use_container_width=True)
     except Exception as e:
         st.error(f"❌ Error in Image 1: {e}")
 
-# === Handle Image 2 (shown below image 1, not side-by-side) ===
+# === Show Image 2 if uploaded ===
 if uploaded_file2:
+    st.markdown("---")
     st.markdown("### 📁 Image 2 Results")
     try:
         image2, satellite2 = process_image_before_model(uploaded_file2)
         st.image(image2, caption="📸 Uploaded Image 2", use_container_width=True)
-        st.subheader("🧭 Cropped Satellite 2")
-        st.image(satellite2, use_container_width=True)
+        st.image(satellite2, caption="🧭 Cropped Satellite 2", use_container_width=True)
 
         with st.spinner("🔧 Generating Roadmap 2..."):
             tensor2 = transform(satellite2).unsqueeze(0)
             roadmap2 = run_model_on_satellite(tensor2)
-            st.subheader("🗺 Predicted Roadmap 2")
-            st.image(roadmap2, use_container_width=True)
+            st.image(roadmap2, caption="🗺 Predicted Roadmap 2", use_container_width=True)
     except Exception as e:
         st.error(f"❌ Error in Image 2: {e}")
